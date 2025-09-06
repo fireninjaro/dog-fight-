@@ -1,5 +1,23 @@
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     controller.moveSprite(mySprite, 100, 100)
+    mySprite.setImage(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . c . . . . . . . 
+        . . . . . . . c c c . . . . . . 
+        . . . . . . . c c c . . . . . . 
+        . . . . . . . c c c . . . . . . 
+        . . . . . . . c 8 c . . . . . . 
+        . . . . . . c 8 f 8 c . . . . . 
+        . . . . . . c f 8 f c . . . . . 
+        . . . . . c c c 8 c c c . . . . 
+        . . . . . c c c c c c c . . . . 
+        . . . . c 8 c c c c c 8 c . . . 
+        . . . c c c c c c c c c c c . . 
+        . . . . . . c c c c c . . . . . 
+        . . . . . c c c c c c c . . . . 
+        . . . . c c c f 2 f c c c . . . 
+        `)
 })
 controller.B.onEvent(ControllerButtonEvent.Pressed, function () {
     projectile2 = sprites.createProjectileFromSprite(img`
@@ -71,6 +89,7 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     mySprite.setImage(img`
         . . . . . . . . . . . . . . . . 
         . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
         . . . c . . . . . . . . . . . . 
         c . . c c . . . . . . . . . . . 
         c c . c 8 c c . . . . . . . . . 
@@ -84,11 +103,10 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
         . . . c . . . . . . . . . . . . 
         . . . . . . . . . . . . . . . . 
         . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
         `)
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Projectile, function (sprite, otherSprite) {
-    info.changeLifeBy(-5)
+    projectile3.setKind(SpriteKind.Enemy)
 })
 controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     controller.moveSprite(mySprite, 100, 100)
@@ -112,7 +130,12 @@ controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
         `)
 })
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
-    sprites.destroyAllSpritesOfKind(SpriteKind.Enemy, effects.spray, 500)
+    sprites.destroy(mySprite2)
+    sprites.destroy(projectile3)
+    mySprite2.setKind(SpriteKind.Food)
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
+    info.changeLifeBy(-5)
 })
 let projectile3: Sprite = null
 let projectile: Sprite = null
@@ -159,6 +182,7 @@ tiles.setCurrentTilemap(tilemap`level1`)
 tiles.placeOnTile(mySprite, tiles.getTileLocation(8, 16))
 tiles.placeOnTile(mySprite2, tiles.getTileLocation(1, 16))
 scene.cameraFollowSprite(mySprite)
+info.setLife(20)
 mySprite2.follow(mySprite, 85)
 game.onUpdateInterval(5000, function () {
     projectile3 = sprites.createProjectileFromSprite(img`
